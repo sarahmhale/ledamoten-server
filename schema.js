@@ -4,54 +4,58 @@ const {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLInt,
-  GraphQLString
+  GraphQLString,
+  GraphQLList
 } = require('graphql')
-const parseXML = util.promisify(require('xml2js').parseString)
 
+//Hardcoded data
+const person = [{
+    sourceid: "1",
+    efternamn: "Hultberg",
+    tilltalsnamn: "Johan",
+  },
+  {
+    sourceid: "2",
+    efternamn: "Viberg",
+    tilltalsnamn: "Johan",
+  },
+  {
+    sourceid: "3",
+    efternamn: "Andersson",
+    tilltalsnamn: "Anna",
+  }
+]
 
-const PokemonType = new GraphQLObjectType({
-  name: 'Pokemon',
-  description: '...',
+//LedamotType
+const LedamotType = new GraphQLObjectType({
+  name: 'Ledamot',
   fields: () => ({
-    name: {
-      type: GraphQLString,
-      resolve: json => {
-        return json.species.name
-      }
-    },
-    height: {
-      type: GraphQLString,
-      resolve: json => {
-        return json.height
-      }
-    },
-    weight: {
-      type: GraphQLString,
-      resolve: json => {
-        return json.weight
+    sourceid: { type: GraphQLString },
+    efternamn: { type: GraphQLString },
+    tilltalsnamn: { type: GraphQLString }
+    //TODO: Parti
+    //TODO: img
+  })
+})
+
+//Root Query
+const RootQuery = new GraphQLObjectType({
+  name: 'RootQueryType',
+  fields: () => ({
+    ledamot: {
+      type: LedamotType,
+      args: {
+        id: { type: GraphQLString }
+      },
+      resolve(_, args) {
+        for (let i = 0; i < person.length; i++) {
+          if (person[i].sourceid == args.id)
+            return person[i]
+        }
       }
     }
   })
 })
-
 module.exports = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'Query',
-    description: '...',
-    fields: () => ({
-      pokemon: {
-        type: PokemonType,
-        args: {
-          id: { type: GraphQLInt }
-        },
-        resolve: (root, args) => {
-          return fetch(`https://pokeapi.co/api/v2/pokemon/${args.id}/`).then(u => u.json()).then(
-            val =>  val).catch(function(err) {
-
-          });
-
-        }
-      }
-    })
-  })
+  query: RootQuery
 })
