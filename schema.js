@@ -7,24 +7,8 @@ const {
   GraphQLString,
   GraphQLList
 } = require('graphql')
+const url = 'http://data.riksdagen.se/personlista/?iid=&fnamn=&enamn=&f_ar=&kn=&parti=&valkrets=&org=&utformat=json'
 
-//Hardcoded data
-const person = [{
-    sourceid: "1",
-    efternamn: "Hultberg",
-    tilltalsnamn: "Johan",
-  },
-  {
-    sourceid: "2",
-    efternamn: "Viberg",
-    tilltalsnamn: "Johan",
-  },
-  {
-    sourceid: "3",
-    efternamn: "Andersson",
-    tilltalsnamn: "Anna",
-  }
-]
 
 //LedamotType
 const LedamotType = new GraphQLObjectType({
@@ -32,9 +16,9 @@ const LedamotType = new GraphQLObjectType({
   fields: () => ({
     sourceid: { type: GraphQLString },
     efternamn: { type: GraphQLString },
-    tilltalsnamn: { type: GraphQLString }
-    //TODO: Parti
-    //TODO: img
+    tilltalsnamn: { type: GraphQLString },
+    bild_url_max: {type: GraphQLString},
+    parti: {type: GraphQLString}
   })
 })
 
@@ -48,10 +32,15 @@ const RootQuery = new GraphQLObjectType({
         id: { type: GraphQLString }
       },
       resolve(_, args) {
-        for (let i = 0; i < person.length; i++) {
-          if (person[i].sourceid == args.id)
-            return person[i]
-        }
+      //TODO: Get from unike id
+      }
+    },
+    ledamoter: {
+      type: new GraphQLList(LedamotType),
+      resolve(_, args) {
+        return fetch(url).then(u => u.json()).then(
+          result => result.personlista.person).catch(err => console.log(err))
+
       }
     }
   })
