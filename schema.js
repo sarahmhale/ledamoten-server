@@ -28,7 +28,19 @@ const filterLedamoter = (ledamoter, nrOfLedamoter) => {
       }
     }))
   }
-  return partier
+}
+
+const randomLedamoter = (ledamoter, nrOfLedamoter) => {
+  filterLedamoter(ledamoter)
+  nrParti = nrOfLedamoter / 8
+
+  let randomLedamoter = []
+  for (let parti in partier) {
+    for (i = 0; i < Math.ceil(nrParti); i++) {
+      randomLedamoter.push(partier[parti].ledamoter[0][Math.floor(Math.random() * partier[parti].ledamoter.length)])
+    }
+  }
+  return randomLedamoter
 }
 
 const LedamotType = new GraphQLObjectType({
@@ -57,7 +69,7 @@ const RootQuery = new GraphQLObjectType({
     ledamoter: {
       type: new GraphQLList(LedamotType),
       resolve: (_, args) => {
-        return fetch(url).then(u => u.json()).then(result => filterLedamoter(result.personlista.person))
+        return fetch(url).then(u => u.json()).then(result => randomLedamoter(result.personlista.person,16))
 
       }
     }
