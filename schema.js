@@ -8,7 +8,7 @@ const {
   GraphQLList
 } = require('graphql')
 
-const partier = {
+let partier = {
   'S': { ledamoter: [] },
   'M': { ledamoter: [] },
   'SD': { ledamoter: [] },
@@ -29,6 +29,13 @@ const filterLedamoter = (ledamoter, nrOfLedamoter) => {
     }))
   }
 }
+const shuffle = (a) => {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 const randomLedamoter = (ledamoter, nrOfLedamoter) => {
   filterLedamoter(ledamoter)
@@ -36,9 +43,10 @@ const randomLedamoter = (ledamoter, nrOfLedamoter) => {
   let randomLedamoter = []
 
   for (let parti in partier) {
-    for (i = 0; i < Math.ceil(nrParti); i++) {
-      randomLedamoter.push(partier[parti].ledamoter[0][Math.floor(Math.random() * partier[parti].ledamoter.length)])
-    }
+
+    aa = shuffle(partier[parti].ledamoter[0])
+    let sliced = aa.slice(0, Math.ceil(nrParti))
+    randomLedamoter = randomLedamoter.concat(sliced)
   }
   return randomLedamoter
 }
@@ -73,8 +81,7 @@ const RootQuery = new GraphQLObjectType({
         nr: { type: GraphQLInt }
       },
       resolve: (_, args) => {
-        return fetch(url).then(u => u.json()).then(result => randomLedamoter(result.personlista.person,args.nr))
-
+        return fetch(url).then(u => u.json()).then(result => randomLedamoter(result.personlista.person, args.nr))
       }
     }
   })
