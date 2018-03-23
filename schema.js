@@ -62,12 +62,16 @@ const RootQuery = new GraphQLObjectType({
       args: {
         id: { type: GraphQLString }
       },
+
       resolve(_, args) {
         //TODO: Get from unike id
       }
     },
     ledamoter: {
       type: new GraphQLList(LedamotType),
+      args: {
+        nr: { type: GraphQLInt }
+      },
       resolve: (_, args) => {
         return fetch(url).then(u => u.json()).then(result => randomLedamoter(result.personlista.person,args.nr))
 
