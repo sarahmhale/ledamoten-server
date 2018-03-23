@@ -33,8 +33,8 @@ const filterLedamoter = (ledamoter, nrOfLedamoter) => {
 const randomLedamoter = (ledamoter, nrOfLedamoter) => {
   filterLedamoter(ledamoter)
   nrParti = nrOfLedamoter / 8
-
   let randomLedamoter = []
+
   for (let parti in partier) {
     for (i = 0; i < Math.ceil(nrParti); i++) {
       randomLedamoter.push(partier[parti].ledamoter[0][Math.floor(Math.random() * partier[parti].ledamoter.length)])
@@ -69,7 +69,7 @@ const RootQuery = new GraphQLObjectType({
     ledamoter: {
       type: new GraphQLList(LedamotType),
       resolve: (_, args) => {
-        return fetch(url).then(u => u.json()).then(result => randomLedamoter(result.personlista.person,16))
+        return fetch(url).then(u => u.json()).then(result => randomLedamoter(result.personlista.person,args.nr))
 
       }
     }
