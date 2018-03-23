@@ -8,26 +8,29 @@ const {
   GraphQLList
 } = require('graphql')
 
-
-//TODO: nr from each parti
-
-const ledamotFromParti = async(nrOfLedamot, parti) => {
-  let url = `http://data.riksdagen.se/personlista/?iid=&fnamn=&enamn=&f_ar=&kn=&parti=${parti}&valkrets=&org=&utformat=json`
-
-  const response = await fetch(url);
-  const json = await response.json();
-  console.log(json)
-  const ledamoter = json.personlista.person
-
-  let randomLedamoter = []
-
-  for (i = 0; i < nrOfLedamot; i++) {
-    randomLedamoter.push(ledamoter[Math.floor(Math.random() * ledamoter.length)])
-  }
-  console.log(randomLedamoter)
-  return randomLedamoter;
-
+const partier = {
+  'S': { ledamoter: [] },
+  'M': { ledamoter: [] },
+  'SD': { ledamoter: [] },
+  'MP': { ledamoter: [] },
+  'C': { ledamoter: [] },
+  'V': { ledamoter: [] },
+  'L': { ledamoter: [] },
+  'KD': { ledamoter: [] }
 }
+const url = `http://data.riksdagen.se/personlista/?iid=&fnamn=&enamn=&f_ar=&kn=&parti=&valkrets=&org=&utformat=json`
+
+const filterLedamoter = (ledamoter, nrOfLedamoter) => {
+  for (let parti in partier) {
+    partier[parti].ledamoter.push(ledamoter.filter(ledamot => {
+      if (ledamot.parti === parti) {
+        return ledamot
+      }
+    }))
+  }
+  return partier
+}
+
 const LedamotType = new GraphQLObjectType({
   name: 'Ledamot',
   fields: () => ({
@@ -53,8 +56,8 @@ const RootQuery = new GraphQLObjectType({
     },
     ledamoter: {
       type: new GraphQLList(LedamotType),
-      resolve(_, args) {
-        ledamotFromParti(3, "M").then(result => console.log(result))
+      resolve: (_, args) => {
+        return fetch(url).then(u => u.json()).then(result => filterLedamoter(result.personlista.person))
 
       }
     }
