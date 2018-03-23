@@ -10,7 +10,6 @@ const {
 const url = 'http://data.riksdagen.se/personlista/?iid=&fnamn=&enamn=&f_ar=&kn=&parti=&valkrets=&org=&utformat=json'
 
 
-//LedamotType
 const LedamotType = new GraphQLObjectType({
   name: 'Ledamot',
   fields: () => ({
@@ -22,7 +21,6 @@ const LedamotType = new GraphQLObjectType({
   })
 })
 
-//Root Query
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
