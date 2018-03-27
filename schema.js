@@ -8,7 +8,7 @@ const {
   GraphQLList
 } = require('graphql')
 
-let partier = {
+let parties = {
   'S': { ledamoter: [] },
   'M': { ledamoter: [] },
   'SD': { ledamoter: [] },
@@ -21,9 +21,9 @@ let partier = {
 const url = `http://data.riksdagen.se/personlista/?iid=&fnamn=&enamn=&f_ar=&kn=&parti=&valkrets=&org=&utformat=json`
 
 const filterLedamoter = (ledamoter, nrOfLedamoter) => {
-  for (let parti in partier) {
-    partier[parti].ledamoter.push(ledamoter.filter(ledamot => {
-      if (ledamot.parti === parti) {
+  for (let party in parties) {
+    parties[party].ledamoter.push(ledamoter.filter(ledamot => {
+      if (ledamot.parti === party) {
         return ledamot
       }
     }))
@@ -38,13 +38,14 @@ const shuffle = (a) => {
 }
 
 const randomLedamoter = (ledamoter, nrOfLedamoter) => {
+
   filterLedamoter(ledamoter)
-  nrParti = nrOfLedamoter / 8
+  nrparty = nrOfLedamoter / 8
   let randomLedamoter = []
 
-  for (let parti in partier) {
-    aa = shuffle(partier[parti].ledamoter[0])
-    let sliced = aa.slice(0, Math.ceil(nrParti))
+  for (let party in parties) {
+    aa = shuffle(parties[party].ledamoter[0])
+    let sliced = aa.slice(0, Math.ceil(nrparty))
     randomLedamoter = randomLedamoter.concat(sliced)
   }
   return shuffle(randomLedamoter)
@@ -57,7 +58,8 @@ const LedamotType = new GraphQLObjectType({
     efternamn: { type: GraphQLString },
     tilltalsnamn: { type: GraphQLString },
     bild_url_max: { type: GraphQLString },
-    parti: { type: GraphQLString }
+    parti: { type: GraphQLString },
+    fodd_ar: { type: GraphQLString }
   })
 })
 
