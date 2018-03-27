@@ -4,7 +4,7 @@ const app = express();
 const schema = require('./schema')
 const cors = require('cors')
 
-app.use('/ledamoten', graphqlHTTP({
+app.use('/ledamoten', cors(), graphqlHTTP({
   schema,
   graphiql:true
 }))
