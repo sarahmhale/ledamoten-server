@@ -43,12 +43,11 @@ const randomLedamoter = (ledamoter, nrOfLedamoter) => {
   let randomLedamoter = []
 
   for (let parti in partier) {
-
     aa = shuffle(partier[parti].ledamoter[0])
     let sliced = aa.slice(0, Math.ceil(nrParti))
     randomLedamoter = randomLedamoter.concat(sliced)
   }
-  return randomLedamoter
+  return shuffle(randomLedamoter)
 }
 
 const LedamotType = new GraphQLObjectType({
@@ -65,16 +64,6 @@ const LedamotType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
-    ledamot: {
-      type: LedamotType,
-      args: {
-        id: { type: GraphQLString }
-      },
-
-      resolve(_, args) {
-        //TODO: Get from unike id
-      }
-    },
     ledamoter: {
       type: new GraphQLList(LedamotType),
       args: {
