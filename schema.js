@@ -29,6 +29,7 @@ const filterLedamoter = (ledamoter, nrOfLedamoter) => {
     }))
   }
 }
+
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -58,6 +59,7 @@ const LedamotType = new GraphQLObjectType({
     efternamn: { type: GraphQLString },
     tilltalsnamn: { type: GraphQLString },
     bild_url_max: { type: GraphQLString },
+    bild_url_192: { type: GraphQLString },
     parti: { type: GraphQLString },
     fodd_ar: { type: GraphQLString }
   })
